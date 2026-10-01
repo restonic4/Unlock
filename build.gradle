@@ -8,28 +8,39 @@ group = 'com.restonic4'
 version = '0.1'
 project.ext.lwjglVersion = "3.4.3"
 
-switch (OperatingSystem.current()) {
-    case OperatingSystem.FREE_BSD:
-        project.ext.lwjglNatives = "natives-freebsd"
-        break
-    case OperatingSystem.LINUX:
-        project.ext.lwjglNatives = "natives-linux"
-        def osArch = System.getProperty("os.arch")
-        if (osArch.startsWith("arm") || osArch.startsWith("aarch64")) {
-            project.ext.lwjglNatives += osArch.contains("64") || osArch.startsWith("armv8") ? "-arm64" : "-arm32"
-        } else if  (osArch.startsWith("ppc")) {
-            project.ext.lwjglNatives += "-ppc64le"
-        } else if  (osArch.startsWith("riscv")) {
-            project.ext.lwjglNatives += "-riscv64"
+static def detectHostNatives() {
+    def os = System.getProperty("os.name").toLowerCase()
+    def arch = System.getProperty("os.arch").toLowerCase()
+
+    if (os.contains("linux")) {
+        if (arch.startsWith("aarch64") || arch.startsWith("arm64")) {
+            return "natives-linux-arm64"
         }
-        break
-    case OperatingSystem.MAC_OS:
-        project.ext.lwjglNatives = "natives-macos"
-        break
-    case OperatingSystem.WINDOWS:
-        project.ext.lwjglNatives = "natives-windows"
-        break
+        return "natives-linux"
+    }
+
+    if (os.contains("freebsd")) {
+        return "natives-freebsd"
+    }
+
+    if (os.contains("mac")) {
+        if (arch.startsWith("aarch64") || arch.startsWith("arm64")) {
+            return "natives-macos-arm64"
+        }
+        return "natives-macos"
+    }
+
+    if (os.contains("windows")) {
+        if (arch.startsWith("aarch64") || arch.startsWith("arm64")) {
+            return "natives-windows-arm64"
+        }
+        return "natives-windows"
+    }
+
+    throw new GradleException("Unsupported host OS: ${os}")
 }
+
+def lwjglNatives = providers.gradleProperty("lwjglNatives").getOrElse(detectHostNatives())
 
 repositories {
     mavenCentral()
@@ -42,8 +53,9 @@ dependencies {
     implementation "org.lwjgl:lwjgl-glfw"
     implementation "org.lwjgl:lwjgl-openal"
     implementation "org.lwjgl:lwjgl-opengl"
-    implementation "org.lwjgl:lwjgl::$lwjglNatives"
-    implementation "org.lwjgl:lwjgl-glfw::$lwjglNatives"
-    implementation "org.lwjgl:lwjgl-openal::$lwjglNatives"
-    implementation "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+
+    runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
 }
