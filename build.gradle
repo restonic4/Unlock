@@ -1,7 +1,5 @@
-import org.gradle.internal.os.OperatingSystem
-
 plugins {
-    id 'java'
+    id 'application'
 }
 
 group = 'com.restonic4'
@@ -58,4 +56,8 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+}
+
+application {
+    mainClass = 'com.restonic4.unlock.Unlock'
 }
