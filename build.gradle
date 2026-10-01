@@ -39,6 +39,7 @@ static def detectHostNatives() {
 }
 
 def lwjglNatives = providers.gradleProperty("lwjglNatives").getOrElse(detectHostNatives())
+def targetPlatform = providers.gradleProperty("targetPlatform").getOrElse("local")
 
 repositories {
     mavenCentral()
@@ -60,4 +61,8 @@ dependencies {
 
 application {
     mainClass = 'com.restonic4.unlock.Unlock'
+}
+
+tasks.named("distZip", Zip) {
+    archiveFileName = "${project.name}-${project.version}-${targetPlatform}.zip"
 }
