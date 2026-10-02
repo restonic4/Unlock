@@ -56,6 +56,8 @@ public class Window implements Disposable {
 
         window.installEvents();
 
+        glfwShowWindow(windowHandle);
+
         return window;
     }
 
@@ -103,8 +105,10 @@ public class Window implements Disposable {
         });
     }
 
-    // Wayland crash
+    @Deprecated(forRemoval = true) // TODO: We cant center on Wayland, so we should not rely on this.
     public void centerWindow() {
+        if (glfwGetPlatform() == GLFW_PLATFORM_WAYLAND) return;
+
         GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         if (videoMode != null) {
             int x = (videoMode.width() - getWidth()) / 2;
@@ -130,8 +134,9 @@ public class Window implements Disposable {
         glfwDestroyWindow(this.handle);
         glfwTerminate();
 
-        try (GLFWErrorCallback errorCallback = GLFW.glfwSetErrorCallback(null)) {
-            if (errorCallback != null) errorCallback.free();
+        GLFWErrorCallback errorCallback = GLFW.glfwSetErrorCallback(null);
+        if (errorCallback != null) {
+            errorCallback.free();
         }
     }
 }
