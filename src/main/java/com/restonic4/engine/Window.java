@@ -62,6 +62,8 @@ public class Window implements Disposable {
     private void installEvents() {
         sizeCallback = glfwSetWindowSizeCallback(this.handle, (window, width, height) -> {
             System.out.println("Window resized: " + width + ", " + height);
+            this.width = width;
+            this.height = height;
         });
 
         posCallback = glfwSetWindowPosCallback(this.handle, (window, x, y) -> {
@@ -128,11 +130,8 @@ public class Window implements Disposable {
         glfwDestroyWindow(this.handle);
         glfwTerminate();
 
-        try {
-            GLFWErrorCallback errorCallback = GLFW.glfwSetErrorCallback(null);
+        try (GLFWErrorCallback errorCallback = GLFW.glfwSetErrorCallback(null)) {
             if (errorCallback != null) errorCallback.free();
-        } catch () {
-
         }
     }
 }

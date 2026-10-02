@@ -19,5 +19,7 @@ public class Unlock {
 
             glfwSwapBuffers(window.getHandle());
         }
+
+        window.dispose();
     }
 }
