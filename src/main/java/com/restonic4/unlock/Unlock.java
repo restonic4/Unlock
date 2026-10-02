@@ -7,8 +7,6 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Unlock {
     public static void main(String[] args) {
-        System.out.println("hi");
-
         Window window = Window.create();
 
         while (!glfwWindowShouldClose(window.getHandle())) {
