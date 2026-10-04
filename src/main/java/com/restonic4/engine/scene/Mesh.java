@@ -131,4 +131,20 @@ public class Mesh {
 
         return new Mesh(vertices, normals, tangents, uvs, indices);
     }
+
+    public float[] getVertices() {
+        return vertices;
+    }
+
+    public int[] getIndices() {
+        return indices;
+    }
+
+    public int getVertexCount() {
+        return vertices.length / 3;
+    }
+
+    public int getIndexCount() {
+        return indices.length;
+    }
 }
