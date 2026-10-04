@@ -1,5 +1,7 @@
 package com.restonic4.engine;
 
+import com.restonic4.bloom.events.EventResult;
+import com.restonic4.engine.api.events.WindowEvents;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryUtil;
@@ -8,7 +10,10 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Window implements Disposable {
     private final long handle;
+    private int x, y;
     private int width, height;
+
+    private boolean shouldClose;
 
     private GLFWWindowSizeCallback sizeCallback;
     private GLFWWindowPosCallback posCallback;
@@ -22,6 +27,7 @@ public class Window implements Disposable {
         this.handle = handle;
         this.width = width;
         this.height = height;
+        this.shouldClose = false;
     }
 
     public static Window create() {
@@ -61,65 +67,95 @@ public class Window implements Disposable {
         return window;
     }
 
+    public void makeContextCurrent() {
+        glfwMakeContextCurrent(handle);
+    }
+
     private void installEvents() {
         sizeCallback = glfwSetWindowSizeCallback(this.handle, (window, width, height) -> {
-            System.out.println("Window resized: " + width + ", " + height);
+            EventResult eventResult = WindowEvents.RESIZED.invoker().onEvent(this, this.width, this.height, width, height);
+            if (eventResult == EventResult.CANCELED) {
+                setSize(this.width, this.height);
+                return;
+            }
+
             this.width = width;
             this.height = height;
         });
 
         posCallback = glfwSetWindowPosCallback(this.handle, (window, x, y) -> {
-            System.out.println("Window moved: " + x + ", " + y);
+            EventResult eventResult = WindowEvents.MOVED.invoker().onEvent(this, this.x, this.y, x, y);
+            if (eventResult == EventResult.CANCELED) {
+                setPosition(this.x, this.y);
+                return;
+            }
+
+            this.x = x;
+            this.y = y;
         });
 
         focusCallback = glfwSetWindowFocusCallback(this.handle, (window, focused) -> {
             if (focused) {
-                System.out.println("Window focused");
+                WindowEvents.FOCUSED.invoker().onEvent(this);
             } else {
-                System.out.println("Window unfocused");
+                EventResult eventResult = WindowEvents.UNFOCUSED.invoker().onEvent(this);
+                if (eventResult == EventResult.CANCELED) setFocus();
             }
         });
 
         iconifyCallback = glfwSetWindowIconifyCallback(this.handle, (window, iconified) -> {
             if (iconified) {
-                System.out.println("Window minimalized");
+                WindowEvents.ICONIFIED.invoker().onEvent(this);
             } else {
-                System.out.println("Window restored");
+                WindowEvents.RESTORED.invoker().onEvent(this);
             }
         });
 
         closeCallback = glfwSetWindowCloseCallback(this.handle, window -> {
-            System.out.println("Window close attempt");
+            EventResult eventResult = WindowEvents.CLOSE_ATTEMPT.invoker().onEvent(this);
+            if (eventResult != EventResult.CANCELED) this.shouldClose = true;
         });
 
         maximizeCallback = glfwSetWindowMaximizeCallback(this.handle, (window, maximized) -> {
             if (maximized) {
-                System.out.println("Window maximized");
+                WindowEvents.MAXIMIZED.invoker().onEvent(this);
             } else {
-                System.out.println("Window unmaximized");
+                WindowEvents.UNMAXIMIZED.invoker().onEvent(this);
             }
         });
 
-        refreshCallback = glfwSetWindowRefreshCallback(this.handle, window -> {
-            System.out.println("Window needs to be refreshed");
-        });
+        refreshCallback = glfwSetWindowRefreshCallback(this.handle, window -> WindowEvents.REFRESH_REQUIRED.invoker().onEvent(this));
     }
 
-    @Deprecated(forRemoval = true) // TODO: We cant center on Wayland, so we should not rely on this.
     public void centerWindow() {
-        if (glfwGetPlatform() == GLFW_PLATFORM_WAYLAND) return;
-
         GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         if (videoMode != null) {
             int x = (videoMode.width() - getWidth()) / 2;
             int y = (videoMode.height() - getHeight()) / 2;
-            glfwSetWindowPos(this.handle, x, y);
+            setPosition(x, y);
         }
+    }
+
+    @Deprecated(forRemoval = true) // TODO: We cant on Wayland, so we should not rely on this.
+    public void setPosition(int x, int y) {
+        if (glfwGetPlatform() == GLFW_PLATFORM_WAYLAND) return;
+        glfwSetWindowPos(this.handle, x, y);
+    }
+
+    public void setSize(int width, int height) {
+        glfwSetWindowSize(this.handle, width, height);
+    }
+
+    @Deprecated(forRemoval = true) // TODO: We cant on Wayland, so we should not rely on this.
+    public void setFocus() {
+        if (glfwGetPlatform() == GLFW_PLATFORM_WAYLAND) return;
+        glfwFocusWindow(this.handle);
     }
 
     public long getHandle() { return handle; }
     public int getWidth() { return width; }
     public int getHeight() { return height; }
+    public boolean shouldClose() { return shouldClose; }
 
     @Override
     public void dispose() {
