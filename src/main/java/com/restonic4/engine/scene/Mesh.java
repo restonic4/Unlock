@@ -26,7 +26,7 @@ public class Mesh {
     }
 
     public static List<Mesh> load(String resourcePath) {
-        ByteBuffer data = Resource.load(resourcePath);
+        ByteBuffer data = Resource.loadBuffer(resourcePath);
 
         try {
             String extension = getExtension(resourcePath);

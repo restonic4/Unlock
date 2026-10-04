@@ -1,6 +1,7 @@
 package com.restonic4.unlock;
 
 import com.restonic4.bloom.events.EventResult;
+import com.restonic4.engine.Shader;
 import com.restonic4.engine.Window;
 import com.restonic4.engine.api.events.WindowEvents;
 import com.restonic4.engine.scene.Mesh;
@@ -16,7 +17,7 @@ public class Unlock {
         Window window2 = Window.create();
 
         List<Mesh> meshes = Mesh.load("Cube.glb");
-        System.out.println(meshes);
+        Shader shader = Shader.fromResources("core.vsh", "core.fsh");
 
         WindowEvents.RESIZED.register((window1, oldX, oldY, newX, newY) -> {
             System.out.println("WOW");
