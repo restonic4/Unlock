@@ -36,25 +36,18 @@ public class Renderer {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer instanceBuffer = stack.mallocFloat(instances.size() * 16);
 
-            for (MeshInstance instance : instances) {
-                instance.getTransform().getModelMatrix().get(instanceBuffer);
+            for (int i = 0; i < instances.size(); i++) {
+                instances.get(i).getTransform().getModelMatrix().get(i * 16, instanceBuffer);
             }
 
-            instanceBuffer.flip();
+            instanceBuffer.limit(instances.size() * 16);
+            instanceBuffer.position(0);
 
             mesh.uploadInstances(instanceBuffer);
         }
 
         mesh.bind();
 
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        /*glDrawElements(
-                GL_TRIANGLES,
-                mesh.getIndexCount(),
-                GL_UNSIGNED_INT,
-                0
-        );*/
         glDrawElementsInstanced(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, 0, instances.size());
 
         mesh.unbind();

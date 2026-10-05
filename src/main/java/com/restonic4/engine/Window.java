@@ -7,8 +7,9 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryUtil;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.glViewport;
 
-public class Window extends RenderTarget implements Disposable {
+public class Window implements RenderTarget, Disposable {
     private final long handle;
     private int x, y;
     private int width, height;
@@ -81,6 +82,7 @@ public class Window extends RenderTarget implements Disposable {
 
             this.width = width;
             this.height = height;
+            glViewport(0, 0, width, height);
         });
 
         posCallback = glfwSetWindowPosCallback(this.handle, (window, x, y) -> {
@@ -156,6 +158,11 @@ public class Window extends RenderTarget implements Disposable {
     public int getWidth() { return width; }
     public int getHeight() { return height; }
     public boolean shouldClose() { return shouldClose; }
+
+    @Override
+    public float getAspectRatio() {
+        return (float) width / (float) height;
+    }
 
     @Override
     public void dispose() {

@@ -29,6 +29,7 @@ public class Unlock {
         List<MeshInstance> meshInstances = new ArrayList<>();
         Transform transform = new Transform();
         transform.setPosition(0, 0, -10);
+        transform.setRotationXYZ(45, 0, 0);
         meshInstances.add(new MeshInstance(mesh, transform));
 
         while (!window.shouldClose()) {
