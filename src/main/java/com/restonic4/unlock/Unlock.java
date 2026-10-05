@@ -20,7 +20,6 @@ import static org.lwjgl.opengl.GL11.*;
 public class Unlock {
     public static void main(String[] args) {
         Window window = Window.create();
-        Window window2 = Window.create();
 
         List<Mesh> meshes = Mesh.load("Cube.glb");
         Mesh mesh = meshes.get(0);
@@ -29,16 +28,15 @@ public class Unlock {
 
         List<MeshInstance> meshInstances = new ArrayList<>();
         Transform transform = new Transform();
-        transform.setPosition(0, 0, 10);
+        transform.setPosition(0, 0, -10);
         meshInstances.add(new MeshInstance(mesh, transform));
 
-        while (!window.shouldClose() && !window2.shouldClose()) {
+        while (!window.shouldClose()) {
             renderWindow(window, renderer, camera, mesh, meshInstances);
-            renderWindow(window2, renderer, camera, mesh, meshInstances);
         }
 
+        mesh.dispose();
         window.dispose();
-        window2.dispose();
     }
 
     private static void renderWindow(Window window, Renderer renderer, Camera camera, Mesh mesh, List<MeshInstance> meshInstances) {

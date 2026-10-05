@@ -67,70 +67,62 @@ public class Mesh implements Disposable {
     public static int createVertexVbo(int vertexCount, float[] vertices, float[] normals, float[] tangents, float[] uvs) {
         FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertexCount * FLOATS_PER_VERTEX);
 
-        try {
-            for (int i = 0; i < vertexCount; i++) {
-                // Position
-                vertexBuffer.put(vertices[i * 3]);
-                vertexBuffer.put(vertices[i * 3 + 1]);
-                vertexBuffer.put(vertices[i * 3 + 2]);
+        for (int i = 0; i < vertexCount; i++) {
+            // Position
+            vertexBuffer.put(vertices[i * 3]);
+            vertexBuffer.put(vertices[i * 3 + 1]);
+            vertexBuffer.put(vertices[i * 3 + 2]);
 
-                // Normal
-                vertexBuffer.put(normals[i * 3]);
-                vertexBuffer.put(normals[i * 3 + 1]);
-                vertexBuffer.put(normals[i * 3 + 2]);
+            // Normal
+            vertexBuffer.put(normals[i * 3]);
+            vertexBuffer.put(normals[i * 3 + 1]);
+            vertexBuffer.put(normals[i * 3 + 2]);
 
-                // Tangent
-                vertexBuffer.put(tangents[i * 3]);
-                vertexBuffer.put(tangents[i * 3 + 1]);
-                vertexBuffer.put(tangents[i * 3 + 2]);
+            // Tangent
+            vertexBuffer.put(tangents[i * 3]);
+            vertexBuffer.put(tangents[i * 3 + 1]);
+            vertexBuffer.put(tangents[i * 3 + 2]);
 
-                // UV
-                vertexBuffer.put(uvs[i * 2]);
-                vertexBuffer.put(uvs[i * 2 + 1]);
-            }
-
-            vertexBuffer.flip();
-
-            int vbo = glGenBuffers();
-            glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-            glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
-
-            // position
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, STRIDE, 0);
-
-            // normal
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 3, GL_FLOAT, false, STRIDE, 3L * Float.BYTES);
-
-            // tangent
-            glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2, 3, GL_FLOAT, false, STRIDE, 6L * Float.BYTES);
-
-            // uv
-            glEnableVertexAttribArray(3);
-            glVertexAttribPointer(3, 2, GL_FLOAT, false, STRIDE, 9L * Float.BYTES);
-
-            return vbo;
-        } finally {
-            MemoryUtil.memFree(vertexBuffer);
+            // UV
+            vertexBuffer.put(uvs[i * 2]);
+            vertexBuffer.put(uvs[i * 2 + 1]);
         }
+
+        vertexBuffer.flip();
+
+        int vbo = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
+
+        // position
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, STRIDE, 0);
+
+        // normal
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, false, STRIDE, 3L * Float.BYTES);
+
+        // tangent
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 3, GL_FLOAT, false, STRIDE, 6L * Float.BYTES);
+
+        // uv
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 2, GL_FLOAT, false, STRIDE, 9L * Float.BYTES);
+
+        return vbo;
     }
 
     public static int createIndexVbo(int[] indices) {
         IntBuffer indexBuffer = BufferUtils.createIntBuffer(indices.length);
-        try {
-            indexBuffer.put(indices).flip();
+        indexBuffer.put(indices).flip();
 
-            int vbo = glGenBuffers();
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, GL_STATIC_DRAW);
+        int vbo = glGenBuffers();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, GL_STATIC_DRAW);
 
-            return vbo;
-        } finally {
-            MemoryUtil.memFree(indexBuffer);
-        }
+        return vbo;
     }
 
     public static int createInstanceVbo() {
