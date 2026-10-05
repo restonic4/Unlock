@@ -1,9 +1,49 @@
 package com.restonic4.engine;
 
 import com.restonic4.engine.scene.Camera;
+import com.restonic4.engine.scene.Mesh;
+import com.restonic4.engine.scene.MeshInstance;
+import org.joml.Matrix4fc;
+import org.lwjgl.BufferUtils;
+
+import java.nio.FloatBuffer;
+import java.util.List;
+
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
+import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
 
 public class Renderer {
-    public void render(Camera mainCamera, RenderTarget renderTarget) {
+    private Shader shader;
 
+    public Renderer() {
+        this.shader = Shader.fromResources("core.vsh", "core.fsh");;
+    }
+
+    // TODO: reuse float buffer
+    public void render(Camera mainCamera, RenderTarget renderTarget, Mesh mesh, List<MeshInstance> instances) {
+        shader.bind();
+
+        float aspectRatio = renderTarget.getAspectRatio();
+        Matrix4fc projectionMatrix = mainCamera.getProjectionMatrix(aspectRatio);
+        Matrix4fc viewMatrix = mainCamera.getViewMatrix();
+
+        shader.set("uProjection", projectionMatrix);
+        shader.set("uView", viewMatrix);
+
+        FloatBuffer instanceBuffer = BufferUtils.createFloatBuffer(instances.size() * 16);
+        for (MeshInstance instance : instances) {
+            instance.getTransform().getModelMatrix().get(instanceBuffer);
+        }
+
+        instanceBuffer.flip();
+
+        mesh.uploadInstances(instanceBuffer);
+        mesh.bind();
+
+        glDrawElementsInstanced(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, 0, instances.size());
+
+        mesh.unbind();
+        Shader.unbind();
     }
 }

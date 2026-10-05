@@ -8,7 +8,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Window implements Disposable {
+public class Window extends RenderTarget implements Disposable {
     private final long handle;
     private int x, y;
     private int width, height;

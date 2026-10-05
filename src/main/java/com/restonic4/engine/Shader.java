@@ -124,6 +124,7 @@ public class Shader implements Disposable {
         set(name, value.x(), value.y(), value.z(), value.w());
     }
 
+    // TODO: reuse float buffer
     public void set(String name, Matrix4fc value) {
         int location = getUniformLocation(name);
         if (location == -1) return;

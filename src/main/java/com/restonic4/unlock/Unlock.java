@@ -1,11 +1,17 @@
 package com.restonic4.unlock;
 
 import com.restonic4.bloom.events.EventResult;
+import com.restonic4.engine.RenderTarget;
+import com.restonic4.engine.Renderer;
 import com.restonic4.engine.Shader;
 import com.restonic4.engine.Window;
 import com.restonic4.engine.api.events.WindowEvents;
+import com.restonic4.engine.math.Transform;
+import com.restonic4.engine.scene.Camera;
 import com.restonic4.engine.scene.Mesh;
+import com.restonic4.engine.scene.MeshInstance;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -17,31 +23,33 @@ public class Unlock {
         Window window2 = Window.create();
 
         List<Mesh> meshes = Mesh.load("Cube.glb");
-        Shader shader = Shader.fromResources("core.vsh", "core.fsh");
+        Mesh mesh = meshes.get(0);
+        Camera camera = new Camera();
+        Renderer renderer = new Renderer();
 
-        WindowEvents.RESIZED.register((window1, oldX, oldY, newX, newY) -> {
-            System.out.println("WOW");
-            System.out.println(oldX + " -> " + newX);
-            System.out.println(oldY + " -> " + newY);
-            return EventResult.CANCELED;
-        });
+        List<MeshInstance> meshInstances = new ArrayList<>();
+        Transform transform = new Transform();
+        transform.setPosition(0, 0, 10);
+        meshInstances.add(new MeshInstance(mesh, transform));
 
         while (!window.shouldClose() && !window2.shouldClose()) {
-            renderWindow(window);
-            renderWindow(window2);
+            renderWindow(window, renderer, camera, mesh, meshInstances);
+            renderWindow(window2, renderer, camera, mesh, meshInstances);
         }
 
         window.dispose();
         window2.dispose();
     }
 
-    private static void renderWindow(Window window) {
+    private static void renderWindow(Window window, Renderer renderer, Camera camera, Mesh mesh, List<MeshInstance> meshInstances) {
         window.makeContextCurrent();
 
         glfwPollEvents();
 
         glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        renderer.render(camera, window, mesh, meshInstances);
 
         glfwSwapBuffers(window.getHandle());
     }
