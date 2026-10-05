@@ -1,5 +1,7 @@
-package com.restonic4.engine;
+package com.restonic4.engine.rendering;
 
+import com.restonic4.engine.Disposable;
+import com.restonic4.engine.Resource;
 import org.joml.Matrix4fc;
 import org.joml.Vector2fc;
 import org.joml.Vector3fc;

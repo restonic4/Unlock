@@ -1,11 +1,7 @@
 package com.restonic4.unlock;
 
-import com.restonic4.bloom.events.EventResult;
-import com.restonic4.engine.RenderTarget;
-import com.restonic4.engine.Renderer;
-import com.restonic4.engine.Shader;
-import com.restonic4.engine.Window;
-import com.restonic4.engine.api.events.WindowEvents;
+import com.restonic4.engine.rendering.Renderer;
+import com.restonic4.engine.rendering.Window;
 import com.restonic4.engine.math.Transform;
 import com.restonic4.engine.scene.Camera;
 import com.restonic4.engine.scene.Mesh;

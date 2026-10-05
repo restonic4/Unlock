@@ -1,6 +1,7 @@
-package com.restonic4.engine;
+package com.restonic4.engine.rendering;
 
 import com.restonic4.bloom.events.EventResult;
+import com.restonic4.engine.Disposable;
 import com.restonic4.engine.api.events.WindowEvents;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
@@ -9,10 +10,9 @@ import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glViewport;
 
-public class Window implements RenderTarget, Disposable {
+public class Window extends RenderTarget implements Disposable {
     private final long handle;
     private int x, y;
-    private int width, height;
 
     private boolean shouldClose;
 
@@ -25,9 +25,8 @@ public class Window implements RenderTarget, Disposable {
     private GLFWWindowRefreshCallback refreshCallback;
 
     private Window(long handle, int width, int height) {
+        super(width, height);
         this.handle = handle;
-        this.width = width;
-        this.height = height;
         this.shouldClose = false;
     }
 
@@ -155,14 +154,7 @@ public class Window implements RenderTarget, Disposable {
     }
 
     public long getHandle() { return handle; }
-    public int getWidth() { return width; }
-    public int getHeight() { return height; }
     public boolean shouldClose() { return shouldClose; }
-
-    @Override
-    public float getAspectRatio() {
-        return (float) width / (float) height;
-    }
 
     @Override
     public void dispose() {

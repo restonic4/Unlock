@@ -1,18 +1,15 @@
-package com.restonic4.engine;
+package com.restonic4.engine.rendering;
 
 import com.restonic4.engine.scene.Camera;
 import com.restonic4.engine.scene.Mesh;
 import com.restonic4.engine.scene.MeshInstance;
 import org.joml.Matrix4fc;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.FloatBuffer;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER_BINDING;
-import static org.lwjgl.opengl.GL30.GL_VERTEX_ARRAY_BINDING;
 import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
 
 public class Renderer {

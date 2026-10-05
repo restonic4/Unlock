@@ -2,7 +2,7 @@ package com.restonic4.engine.api.events;
 
 import com.restonic4.bloom.events.EventResult;
 import com.restonic4.bloom.events.processor.Event;
-import com.restonic4.engine.Window;
+import com.restonic4.engine.rendering.Window;
 
 public class WindowEvents extends WindowEventsBase {
     @Event(cancellable = true)
