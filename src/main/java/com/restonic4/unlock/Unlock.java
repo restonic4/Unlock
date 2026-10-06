@@ -1,5 +1,6 @@
 package com.restonic4.unlock;
 
+import com.restonic4.engine.math.Time;
 import com.restonic4.engine.rendering.Renderer;
 import com.restonic4.engine.rendering.Window;
 import com.restonic4.engine.math.Transform;
@@ -25,10 +26,17 @@ public class Unlock {
         List<MeshInstance> meshInstances = new ArrayList<>();
         Transform transform = new Transform();
         transform.setPosition(0, 0, -10);
-        transform.setRotationXYZ(45, 0, 0);
+        transform.setRotationXYZ(0, 0, 0);
         meshInstances.add(new MeshInstance(mesh, transform));
 
+        Time time = new Time();
+
         while (!window.shouldClose()) {
+            time.update();
+
+            double delta = time.delta();
+
+            transform.rotateXYZ((float) (0.1f * delta), (float) (0.1f * delta), (float) (0.1f * delta));
             renderWindow(window, renderer, camera, mesh, meshInstances);
         }
 
