@@ -1,4 +1,4 @@
-package com.restonic4.engine.rendering;
+package com.restonic4.bloom.core.rendering;
 
 public abstract class RenderTarget {
     protected int width, height;

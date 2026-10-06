@@ -1,4 +1,4 @@
-package com.restonic4.engine.scene;
+package com.restonic4.bloom.core.scene;
 
 public class Material {
     Texture albedo;

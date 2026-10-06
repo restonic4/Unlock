@@ -1,20 +1,29 @@
-package com.restonic4.engine.rendering;
+package com.restonic4.bloom.backends.glfw;
 
+import com.restonic4.bloom.api.events.WindowEvents;
+import com.restonic4.bloom.core.graphics.GraphicsApi;
+import com.restonic4.bloom.core.window.Window;
 import com.restonic4.bloom.events.EventResult;
-import com.restonic4.engine.Disposable;
-import com.restonic4.engine.api.events.WindowEvents;
+import com.restonic4.unlock.Unlock;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryUtil;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
+import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_FORWARD_COMPAT;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
+import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
+import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
+import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
+import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
+import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.opengl.GL11.glViewport;
 
-public class Window extends RenderTarget implements Disposable {
+public class GlfwWindow extends Window {
     private final long handle;
-    private int x, y;
-
-    private boolean shouldClose;
 
     private GLFWWindowSizeCallback sizeCallback;
     private GLFWWindowPosCallback posCallback;
@@ -24,70 +33,76 @@ public class Window extends RenderTarget implements Disposable {
     private GLFWWindowMaximizeCallback maximizeCallback;
     private GLFWWindowRefreshCallback refreshCallback;
 
-    private Window(long handle, int width, int height) {
+    public GlfwWindow(int width, int height) {
         super(width, height);
-        this.handle = handle;
-        this.shouldClose = false;
-    }
 
-    public static Window create() {
         // Print GLFW errors to stderr
         GLFWErrorCallback.createPrint(System.err).set();
 
         if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
 
-        // OpenGL version
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-        // macOS
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+        initGraphicsApi(Unlock.API);
 
         // Settings
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
         // Creation
-        long windowHandle = glfwCreateWindow(500, 500, "LWJGL3 Window", MemoryUtil.NULL, MemoryUtil.NULL);
-        if (windowHandle == MemoryUtil.NULL) throw new IllegalStateException("Failed to create GLFW window");
+        this.handle = glfwCreateWindow(500, 500, "LWJGL3 Window", MemoryUtil.NULL, MemoryUtil.NULL);
+        if (handle == MemoryUtil.NULL) throw new IllegalStateException("Failed to create GLFW window");
 
-        Window window = new Window(windowHandle, 500, 500);
-        window.centerWindow();
+        this.centerWindow();
 
-        glfwMakeContextCurrent(windowHandle);
-        glfwSwapInterval(1); // vsynq for now
-        GL.createCapabilities();
+        finalizeGraphicsApi(Unlock.API);
 
-        window.installEvents();
+        this.installEvents();
 
-        glfwShowWindow(windowHandle);
+        glfwShowWindow(handle);
+    }
+    
+    private void initGraphicsApi(GraphicsApi api) {
+        if (api == GraphicsApi.OPENGL) {
+            // OpenGL version
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
-        return window;
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+            // macOS
+            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+        } else if (api == GraphicsApi.VULKAN) {
+            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        }
     }
 
-    public void makeContextCurrent() {
+    private void finalizeGraphicsApi(GraphicsApi api) {
+        if (api == GraphicsApi.VULKAN) return;
+
         glfwMakeContextCurrent(handle);
+        glfwSwapInterval(1); // vsynq for now
+        GL.createCapabilities();
     }
 
     private void installEvents() {
         sizeCallback = glfwSetWindowSizeCallback(this.handle, (window, width, height) -> {
             EventResult eventResult = WindowEvents.RESIZED.invoker().onEvent(this, this.width, this.height, width, height);
             if (eventResult == EventResult.CANCELED) {
-                setSize(this.width, this.height);
+                this.setSize(this.width, this.height);
                 return;
             }
 
             this.width = width;
             this.height = height;
-            glViewport(0, 0, width, height);
+
+            if (Unlock.API == GraphicsApi.OPENGL) {
+                glViewport(0, 0, width, height);
+            }
         });
 
         posCallback = glfwSetWindowPosCallback(this.handle, (window, x, y) -> {
             EventResult eventResult = WindowEvents.MOVED.invoker().onEvent(this, this.x, this.y, x, y);
             if (eventResult == EventResult.CANCELED) {
-                setPosition(this.x, this.y);
+                this.setPosition(this.x, this.y);
                 return;
             }
 
@@ -100,7 +115,7 @@ public class Window extends RenderTarget implements Disposable {
                 WindowEvents.FOCUSED.invoker().onEvent(this);
             } else {
                 EventResult eventResult = WindowEvents.UNFOCUSED.invoker().onEvent(this);
-                if (eventResult == EventResult.CANCELED) setFocus();
+                if (eventResult == EventResult.CANCELED) this.setFocus();
             }
         });
 
@@ -114,7 +129,7 @@ public class Window extends RenderTarget implements Disposable {
 
         closeCallback = glfwSetWindowCloseCallback(this.handle, window -> {
             EventResult eventResult = WindowEvents.CLOSE_ATTEMPT.invoker().onEvent(this);
-            if (eventResult != EventResult.CANCELED) this.shouldClose = true;
+            if (eventResult != EventResult.CANCELED) this.setShouldClose(true);
         });
 
         maximizeCallback = glfwSetWindowMaximizeCallback(this.handle, (window, maximized) -> {
@@ -128,33 +143,49 @@ public class Window extends RenderTarget implements Disposable {
         refreshCallback = glfwSetWindowRefreshCallback(this.handle, window -> WindowEvents.REFRESH_REQUIRED.invoker().onEvent(this));
     }
 
+    @Override
     public void centerWindow() {
         GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         if (videoMode != null) {
             int x = (videoMode.width() - getWidth()) / 2;
             int y = (videoMode.height() - getHeight()) / 2;
-            setPosition(x, y);
+            this.setPosition(x, y);
         }
     }
 
-    @Deprecated(forRemoval = true) // TODO: We cant on Wayland, so we should not rely on this.
+    @Override
     public void setPosition(int x, int y) {
         if (glfwGetPlatform() == GLFW_PLATFORM_WAYLAND) return;
         glfwSetWindowPos(this.handle, x, y);
     }
 
+    @Override
     public void setSize(int width, int height) {
         glfwSetWindowSize(this.handle, width, height);
     }
 
-    @Deprecated(forRemoval = true) // TODO: We cant on Wayland, so we should not rely on this.
+    @Override
     public void setFocus() {
         if (glfwGetPlatform() == GLFW_PLATFORM_WAYLAND) return;
         glfwFocusWindow(this.handle);
     }
 
-    public long getHandle() { return handle; }
-    public boolean shouldClose() { return shouldClose; }
+    @Deprecated(forRemoval = true) // OpenGL only
+    public void makeContextCurrent() {
+        glfwMakeContextCurrent(handle);
+    }
+
+    @Deprecated(forRemoval = true) // OpenGL only
+    public void swapBuffers() {
+        glfwSwapBuffers(handle);
+    }
+
+    @Deprecated(forRemoval = true) // OpenGL only
+    public void setSwapInterval(int interval) {
+        glfwSwapInterval(interval);
+    }
+
+    public long getHandle() { return this.handle; }
 
     @Override
     public void dispose() {

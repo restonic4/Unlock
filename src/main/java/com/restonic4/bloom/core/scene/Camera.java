@@ -1,6 +1,6 @@
-package com.restonic4.engine.scene;
+package com.restonic4.bloom.core.scene;
 
-import com.restonic4.engine.math.Transform;
+import com.restonic4.bloom.core.math.Transform;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Quaternionf;

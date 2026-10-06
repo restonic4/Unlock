@@ -1,8 +1,8 @@
-package com.restonic4.engine.rendering;
+package com.restonic4.bloom.core.rendering;
 
-import com.restonic4.engine.scene.Camera;
-import com.restonic4.engine.scene.Mesh;
-import com.restonic4.engine.scene.MeshInstance;
+import com.restonic4.bloom.core.scene.Camera;
+import com.restonic4.bloom.core.scene.Mesh;
+import com.restonic4.bloom.core.scene.MeshInstance;
 import org.joml.Matrix4fc;
 import org.lwjgl.system.MemoryStack;
 

@@ -1,4 +1,4 @@
-package com.restonic4.engine.math;
+package com.restonic4.bloom.core.math;
 
 public final class Time {
     private static final long NANOS_PER_SECOND = 1_000_000_000L;

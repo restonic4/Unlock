@@ -1,7 +1,7 @@
-package com.restonic4.engine.rendering;
+package com.restonic4.bloom.core.rendering;
 
-import com.restonic4.engine.Disposable;
-import com.restonic4.engine.Resource;
+import com.restonic4.bloom.core.Disposable;
+import com.restonic4.bloom.core.Resource;
 import org.joml.Matrix4fc;
 import org.joml.Vector2fc;
 import org.joml.Vector3fc;

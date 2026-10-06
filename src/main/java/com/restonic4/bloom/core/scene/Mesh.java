@@ -1,7 +1,7 @@
-package com.restonic4.engine.scene;
+package com.restonic4.bloom.core.scene;
 
-import com.restonic4.engine.Disposable;
-import com.restonic4.engine.Resource;
+import com.restonic4.bloom.core.Disposable;
+import com.restonic4.bloom.core.Resource;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;

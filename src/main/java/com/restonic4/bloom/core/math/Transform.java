@@ -1,8 +1,6 @@
-package com.restonic4.engine.math;
+package com.restonic4.bloom.core.math;
 
 import org.joml.*;
-
-import java.lang.Math;
 
 public class Transform {
     private float x, y, z;

@@ -1,6 +1,6 @@
-package com.restonic4.engine.scene;
+package com.restonic4.bloom.core.scene;
 
-import com.restonic4.engine.math.Transform;
+import com.restonic4.bloom.core.math.Transform;
 
 public class MeshInstance {
     private final Mesh mesh;
@@ -14,7 +14,6 @@ public class MeshInstance {
     public Mesh getMesh() {
         return mesh;
     }
-
     public Transform getTransform() {
         return transform;
     }

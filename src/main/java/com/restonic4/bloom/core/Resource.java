@@ -1,8 +1,7 @@
-package com.restonic4.engine;
+package com.restonic4.bloom.core;
 
 import org.lwjgl.system.MemoryUtil;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
