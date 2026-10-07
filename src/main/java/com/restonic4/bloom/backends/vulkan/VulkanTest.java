@@ -18,6 +18,10 @@ public class VulkanTest {
                 ENABLE_VALIDATION_LAYERS
         );
 
+        VulkanPhysicalDevice device = VulkanPhysicalDevice.pickBestDevice(vkInstance.getInstance());
+        System.out.println("Device type: " + device.getType());
+        System.out.println("Device score: " + device.getScore());
+
         while (!window.shouldClose()) {
             glfwPollEvents();
         }

@@ -25,7 +25,8 @@ public class VulkanInstance {
         int vkEngineVersion = VK_MAKE_VERSION(engineVersion.getMajor(), engineVersion.getMinor(), engineVersion.getPatch());
         int vkAppVersion = VK_MAKE_VERSION(appVersion.getMajor(), appVersion.getMinor(), appVersion.getPatch());
 
-        if(enableValidationLayers && !VulkanDebug.checkValidationLayerSupport()) {
+        // On Arch Linux we need vulkan-validation-layers
+        if (enableValidationLayers && !VulkanDebug.checkValidationLayerSupport()) {
             throw new RuntimeException("Validation requested but not supported");
         }
 
