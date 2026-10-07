@@ -1,6 +1,7 @@
 package com.restonic4.unlock;
 
 import com.restonic4.bloom.backends.glfw.GlfwWindow;
+import com.restonic4.bloom.backends.vulkan.VulkanTest;
 import com.restonic4.bloom.core.graphics.GraphicsApi;
 import com.restonic4.bloom.core.math.Time;
 import com.restonic4.bloom.core.rendering.Renderer;
@@ -20,6 +21,10 @@ public class Unlock {
     public static final GraphicsApi API = GraphicsApi.VULKAN;
 
     public static void main(String[] args) {
+        VulkanTest.init();
+    }
+
+    private static void init() {
         Window window = new GlfwWindow(500, 500);
 
         List<Mesh> meshes = Mesh.load("Cube.glb");
@@ -49,12 +54,12 @@ public class Unlock {
                 transform.rotateXYZ((float) (speed * delta), (float) (speed * delta), (float) (speed * delta));
             }
 
-
             renderWindow(window, renderer, camera, mesh, meshInstances);
         }
 
         mesh.dispose();
         window.dispose();
+        glfwTerminate();
     }
 
     private static MeshInstance createCube(Mesh mesh, int x, int y, int z) {

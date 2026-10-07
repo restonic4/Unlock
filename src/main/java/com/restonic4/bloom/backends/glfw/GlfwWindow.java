@@ -48,7 +48,7 @@ public class GlfwWindow extends Window {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
         // Creation
-        this.handle = glfwCreateWindow(500, 500, "LWJGL3 Window", MemoryUtil.NULL, MemoryUtil.NULL);
+        this.handle = glfwCreateWindow(width, height, "LWJGL3 Window", MemoryUtil.NULL, MemoryUtil.NULL);
         if (handle == MemoryUtil.NULL) throw new IllegalStateException("Failed to create GLFW window");
 
         this.centerWindow();
