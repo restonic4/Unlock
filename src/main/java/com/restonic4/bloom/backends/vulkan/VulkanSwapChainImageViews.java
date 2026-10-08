@@ -13,7 +13,7 @@ public final class VulkanSwapChainImageViews implements Disposable {
     }
 
     public static VulkanSwapChainImageViews create(VulkanLogicalDevice logicalDevice, VulkanSwapChain swapChain) {
-        long[] images = swapChain.getImages();
+        long[] images = swapChain.getImageHandles();
         int format = swapChain.getImageFormat();
 
         List<VulkanImageView> views = new ArrayList<>(images.length);

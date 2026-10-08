@@ -20,20 +20,20 @@ public class VulkanSwapChain implements Disposable {
     private final VkDevice device;
     private final long handle;
 
-    private final long[] images;
+    private final long[] imagehandles;
     private final int imageFormat;
     private final int imageWidth;
     private final int imageHeight;
 
     private VulkanSwapChain(
             VkDevice device, long handle,
-            long[] images, int imageFormat,
+            long[] imagehandles, int imageFormat,
             int imageWidth, int imageHeight
     ) {
         this.device = device;
         this.handle = handle;
 
-        this.images = images;
+        this.imagehandles = imagehandles;
         this.imageFormat = imageFormat;
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
@@ -158,7 +158,7 @@ public class VulkanSwapChain implements Disposable {
     }
 
     public long getHandle() { return handle; }
-    public long[] getImages() { return images; }
+    public long[] getImageHandles() { return imagehandles; }
     public int getImageFormat() { return imageFormat; }
     public int getImageWidth() { return imageWidth; }
     public int getImageHeight() { return imageHeight; }
