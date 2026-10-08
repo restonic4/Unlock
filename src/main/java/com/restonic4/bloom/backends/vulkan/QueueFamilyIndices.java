@@ -50,6 +50,10 @@ public class QueueFamilyIndices {
         return graphics != null && present != null;
     }
 
+    public int[] unique() {
+        return IntStream.of(graphics, present).distinct().toArray();
+    }
+
     public int graphics() { return graphics; }
     public int present() { return present; }
 }

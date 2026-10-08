@@ -31,11 +31,8 @@ public class VulkanLogicalDevice implements Disposable {
 
             // Queue creation
 
-            Set<Integer> uniqueQueueFamilies = new HashSet<>(); // Cant be a regular set, graphics and present could be the same number.
-            uniqueQueueFamilies.add(indices.graphics());
-            uniqueQueueFamilies.add(indices.present());
-
-            VkDeviceQueueCreateInfo.Buffer queueCreateInfo = VkDeviceQueueCreateInfo.calloc(uniqueQueueFamilies.size(), stack);
+            int[] uniqueQueueFamilies = indices.unique();
+            VkDeviceQueueCreateInfo.Buffer queueCreateInfo = VkDeviceQueueCreateInfo.calloc(uniqueQueueFamilies.length, stack);
 
             int queueIndex = 0;
 
