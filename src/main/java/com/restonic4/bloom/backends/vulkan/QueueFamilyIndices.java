@@ -47,8 +47,9 @@ public class QueueFamilyIndices {
     }
 
     public boolean isComplete() {
-        return graphics != null;
+        return graphics != null && present != null;
     }
+
     public int graphics() { return graphics; }
     public int present() { return present; }
 }
