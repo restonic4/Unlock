@@ -2,9 +2,8 @@ plugins {
     id 'application'
 }
 
-group = 'com.restonic4.bloom'
-version = '0.1'
-project.ext.lwjglVersion = "3.4.3"
+group = group
+version = version
 
 static def detectHostNatives() {
     def os = System.getProperty("os.name").toLowerCase()
@@ -47,7 +46,7 @@ repositories {
 }
 
 dependencies {
-    implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+    implementation platform("org.lwjgl:lwjgl-bom:${lwjglVersion}")
 
     implementation "org.lwjgl:lwjgl"
     implementation "org.lwjgl:lwjgl-glfw"
@@ -56,16 +55,16 @@ dependencies {
     implementation "org.lwjgl:lwjgl-vulkan"
     implementation "org.lwjgl:lwjgl-assimp"
 
-    runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-assimp::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl::${lwjglNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-glfw::${lwjglNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-openal::${lwjglNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-opengl::${lwjglNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-assimp::${lwjglNatives}"
 
-    implementation("org.joml:joml:1.10.8")
+    implementation "org.joml:joml:1.10.8"
 
-    implementation 'com.restonic4.bloom:events:1.0.0'
-    annotationProcessor("com.restonic4.bloom:events:1.0.0")
+    implementation "com.restonic4.bloom:events:${bloomEventsVersion}"
+    annotationProcessor "com.restonic4.bloom:events:${bloomEventsVersion}"
 }
 
 application {
