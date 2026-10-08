@@ -33,11 +33,13 @@ public class VulkanTest {
         VulkanLogicalDevice logicalDevice = VulkanLogicalDevice.create(physicalDevice, surface.getHandle());
 
         VulkanSwapChain swapChain = VulkanSwapChain.create(physicalDevice, logicalDevice, surface.getHandle(), window.getHandle());
+        VulkanSwapChainImageViews imageViews = VulkanSwapChainImageViews.create(logicalDevice, swapChain);
 
         while (!window.shouldClose()) {
             glfwPollEvents();
         }
 
+        imageViews.dispose();
         swapChain.dispose();
         logicalDevice.dispose();
         surface.dispose();
