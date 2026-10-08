@@ -1,5 +1,6 @@
 package com.restonic4.bloom.backends.vulkan;
 
+import com.restonic4.bloom.core.Disposable;
 import com.restonic4.bloom.core.platform.Version;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
@@ -10,7 +11,7 @@ import static org.lwjgl.glfw.GLFWVulkan.glfwVulkanSupported;
 import static org.lwjgl.vulkan.EXTDebugUtils.*;
 import static org.lwjgl.vulkan.VK10.*;
 
-public class VulkanInstance {
+public class VulkanInstance implements Disposable {
     private final VkInstance vkInstance;
     private final long debugMessenger;
 
@@ -85,7 +86,8 @@ public class VulkanInstance {
         return glfwExtensions;
     }
 
-    public void destroy() {
+    @Override
+    public void dispose() {
         VulkanDebug.destroyMessenger(vkInstance, debugMessenger);
         vkDestroyInstance(vkInstance, null);
     }
