@@ -54,12 +54,14 @@ dependencies {
     implementation "org.lwjgl:lwjgl-opengl"
     implementation "org.lwjgl:lwjgl-vulkan"
     implementation "org.lwjgl:lwjgl-assimp"
+    implementation "org.lwjgl:lwjgl-shaderc"
 
     runtimeOnly "org.lwjgl:lwjgl::${lwjglNatives}"
     runtimeOnly "org.lwjgl:lwjgl-glfw::${lwjglNatives}"
     runtimeOnly "org.lwjgl:lwjgl-openal::${lwjglNatives}"
     runtimeOnly "org.lwjgl:lwjgl-opengl::${lwjglNatives}"
     runtimeOnly "org.lwjgl:lwjgl-assimp::${lwjglNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-shaderc::${lwjglNatives}"
 
     implementation "org.joml:joml:1.10.8"
 

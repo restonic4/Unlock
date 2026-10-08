@@ -1,5 +1,6 @@
 package com.restonic4.bloom.core.rendering;
 
+import com.restonic4.bloom.backends.opengl.OpenGlShaderProgram;
 import com.restonic4.bloom.core.scene.Camera;
 import com.restonic4.bloom.core.scene.Mesh;
 import com.restonic4.bloom.core.scene.MeshInstance;
@@ -13,10 +14,10 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
 
 public class Renderer {
-    private Shader shader;
+    private OpenGlShaderProgram shader;
 
     public Renderer() {
-        this.shader = Shader.fromResources("core.vsh", "core.fsh");;
+        this.shader = OpenGlShaderProgram.fromResources("core.vsh", "core.fsh");;
     }
 
     // TODO: reuse float buffer
@@ -48,6 +49,6 @@ public class Renderer {
         glDrawElementsInstanced(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, 0, instances.size());
 
         mesh.unbind();
-        Shader.unbind();
+        OpenGlShaderProgram.unbind();
     }
 }

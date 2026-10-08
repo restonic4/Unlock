@@ -24,16 +24,6 @@ public final class VulkanShaderModule implements Disposable {
         this.handle = handle;
     }
 
-    // TODO: Use our Resource utils
-    public static VulkanShaderModule create(VulkanLogicalDevice logicalDevice, Path spirvPath) {
-        try {
-            byte[] bytes = Files.readAllBytes(spirvPath);
-            return create(logicalDevice, bytes);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read SPIR-V shader: " + spirvPath, e);
-        }
-    }
-
     public static VulkanShaderModule create(VulkanLogicalDevice logicalDevice, byte[] spirv) {
         if (spirv.length == 0) throw new IllegalArgumentException("SPIR-V shader is empty");
 
