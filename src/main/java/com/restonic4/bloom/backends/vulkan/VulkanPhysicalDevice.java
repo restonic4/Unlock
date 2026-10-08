@@ -105,23 +105,6 @@ public class VulkanPhysicalDevice {
         }
     }
 
-    /*private static boolean checkDeviceExtensionSupport(VkPhysicalDevice device) {
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer extensionCount = stack.ints(0);
-
-            vkEnumerateDeviceExtensionProperties(device, (ByteBuffer) null, extensionCount, null);
-
-            VkExtensionProperties.Buffer availableExtensions = VkExtensionProperties.malloc(extensionCount.get(0), stack);
-
-            vkEnumerateDeviceExtensionProperties(device, (ByteBuffer) null, extensionCount, availableExtensions);
-
-            Set<String> availableExtensionNames = availableExtensions.stream()
-                    .map(VkExtensionProperties::extensionNameString)
-                    .collect(toSet());
-
-            return availableExtensionNames.containsAll(REQUIRED_DEVICE_EXTENSIONS);
-        }
-    }*/
     private static boolean checkDeviceExtensionSupport(VkPhysicalDevice device) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer extensionCount = stack.ints(0);
