@@ -5,28 +5,59 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.lwjgl.vulkan.KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class VulkanLogicalDevice implements Disposable {
+    private static final String[] DEVICE_EXTENSIONS = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+
     private final VkDevice handle;
     private final VkQueue graphicsQueue;
+    private final VkQueue presentQueue;
 
-    private VulkanLogicalDevice(VkDevice handle, VkQueue graphicsQueue) {
+    private VulkanLogicalDevice(VkDevice handle, VkQueue graphicsQueue, VkQueue presentQueue) {
         this.handle = handle;
         this.graphicsQueue = graphicsQueue;
+        this.presentQueue = presentQueue;
     }
 
-    public static VulkanLogicalDevice create(VulkanPhysicalDevice physicalDevice) {
+    public static VulkanLogicalDevice create(VulkanPhysicalDevice physicalDevice, long surface) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            QueueFamilyIndices indices = QueueFamilyIndices.findQueueFamilies(physicalDevice.getHandle());
+            QueueFamilyIndices indices = QueueFamilyIndices.findQueueFamilies(physicalDevice.getHandle(), surface);
             if (!indices.isComplete()) throw new IllegalStateException("Physical device has no graphics queue");
 
             // Queue creation
 
-            VkDeviceQueueCreateInfo.Buffer queueCreateInfo = VkDeviceQueueCreateInfo.calloc(1, stack)
-                    .sType(VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
-                    .queueFamilyIndex(indices.graphics())
-                    .pQueuePriorities(stack.floats(1.0f));
+            Set<Integer> uniqueQueueFamilies = new HashSet<>(); // Cant be a regular set, graphics and present could be the same number.
+            uniqueQueueFamilies.add(indices.graphics());
+            uniqueQueueFamilies.add(indices.present());
+
+            VkDeviceQueueCreateInfo.Buffer queueCreateInfo = VkDeviceQueueCreateInfo.calloc(uniqueQueueFamilies.size(), stack);
+
+            int queueIndex = 0;
+
+            for (int family : uniqueQueueFamilies) {
+                VkDeviceQueueCreateInfo queue = queueCreateInfo.get(queueIndex);
+
+                queue.sType$Default();
+                queue.queueFamilyIndex(family);
+                VkDeviceQueueCreateInfo.nqueueCount(queue.address(), 1);
+                queue.pQueuePriorities(stack.floats(1.0f));
+
+                queueIndex++;
+            }
+
+            // Device extensions
+
+            PointerBuffer deviceExtensions = stack.mallocPointer(DEVICE_EXTENSIONS.length);
+            for (String extension : DEVICE_EXTENSIONS) {
+                deviceExtensions.put(stack.UTF8(extension));
+            }
+
+            deviceExtensions.flip();
 
             // Device features
 
@@ -37,6 +68,7 @@ public class VulkanLogicalDevice implements Disposable {
             VkDeviceCreateInfo createInfo = VkDeviceCreateInfo.calloc(stack)
                     .sType(VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
                     .pQueueCreateInfos(queueCreateInfo)
+                    .ppEnabledExtensionNames(deviceExtensions)
                     .pEnabledFeatures(deviceFeatures);
 
             PointerBuffer pDevice = stack.pointers(VK_NULL_HANDLE);
@@ -56,9 +88,17 @@ public class VulkanLogicalDevice implements Disposable {
 
             VkQueue graphicsQueue = new VkQueue(pGraphicsQueue.get(0), device);
 
-            return new VulkanLogicalDevice(device, graphicsQueue);
+            PointerBuffer pPresentQueue = stack.pointers(VK_NULL_HANDLE);
+
+            vkGetDeviceQueue(device, indices.present(), 0, pPresentQueue);
+
+            VkQueue presentQueue = new VkQueue(pPresentQueue.get(0), device);
+
+            return new VulkanLogicalDevice(device, graphicsQueue, presentQueue);
         }
     }
+
+    public VkDevice getHandle() { return handle; }
 
     @Override
     public void dispose() {

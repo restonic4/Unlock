@@ -7,13 +7,13 @@ import org.lwjgl.vulkan.VkQueueFamilyProperties;
 import java.nio.IntBuffer;
 import java.util.stream.IntStream;
 
-import static org.lwjgl.vulkan.VK10.VK_QUEUE_GRAPHICS_BIT;
-import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceQueueFamilyProperties;
+import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR;
+import static org.lwjgl.vulkan.VK10.*;
 
 public class QueueFamilyIndices {
-    private Integer graphics;
+    private Integer graphics, present;
 
-    public static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
+    public static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, long surface) {
         QueueFamilyIndices indices = new QueueFamilyIndices();
 
         try(MemoryStack stack = MemoryStack.stackPush()) {
@@ -25,10 +25,22 @@ public class QueueFamilyIndices {
 
             vkGetPhysicalDeviceQueueFamilyProperties(device, queueFamilyCount, queueFamilies);
 
+            IntBuffer presentSupport = stack.ints(VK_FALSE);
+
             IntStream.range(0, queueFamilies.capacity())
-                    .filter(index -> (queueFamilies.get(index).queueFlags() & VK_QUEUE_GRAPHICS_BIT) != 0)
-                    .findFirst()
-                    .ifPresent(index -> indices.graphics = index);
+                    .forEach(index -> {
+                        int flags = queueFamilies.get(index).queueFlags();
+
+                        if ((flags & VK_QUEUE_GRAPHICS_BIT) != 0) {
+                            indices.graphics = index;
+                        }
+
+                        vkGetPhysicalDeviceSurfaceSupportKHR(device, index, surface, presentSupport);
+
+                        if (presentSupport.get(0) == VK_TRUE) {
+                            indices.present = index;
+                        }
+                    });
 
             return indices;
         }
@@ -38,4 +50,5 @@ public class QueueFamilyIndices {
         return graphics != null;
     }
     public int graphics() { return graphics; }
+    public int present() { return present; }
 }
