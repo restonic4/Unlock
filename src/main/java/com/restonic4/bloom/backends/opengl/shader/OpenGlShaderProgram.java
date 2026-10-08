@@ -1,4 +1,4 @@
-package com.restonic4.bloom.backends.opengl;
+package com.restonic4.bloom.backends.opengl.shader;
 
 import com.restonic4.bloom.core.Disposable;
 import com.restonic4.bloom.core.graphics.ShaderSource;

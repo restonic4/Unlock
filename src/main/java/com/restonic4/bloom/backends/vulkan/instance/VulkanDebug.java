@@ -1,4 +1,4 @@
-package com.restonic4.bloom.backends.vulkan;
+package com.restonic4.bloom.backends.vulkan.instance;
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;

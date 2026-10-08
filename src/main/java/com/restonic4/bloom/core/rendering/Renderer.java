@@ -1,6 +1,6 @@
 package com.restonic4.bloom.core.rendering;
 
-import com.restonic4.bloom.backends.opengl.OpenGlShaderProgram;
+import com.restonic4.bloom.backends.opengl.shader.OpenGlShaderProgram;
 import com.restonic4.bloom.core.scene.Camera;
 import com.restonic4.bloom.core.scene.Mesh;
 import com.restonic4.bloom.core.scene.MeshInstance;

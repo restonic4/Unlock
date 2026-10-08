@@ -1,5 +1,6 @@
-package com.restonic4.bloom.backends.vulkan;
+package com.restonic4.bloom.backends.vulkan.swapchain;
 
+import com.restonic4.bloom.backends.vulkan.device.VulkanLogicalDevice;
 import com.restonic4.bloom.core.Disposable;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkDevice;

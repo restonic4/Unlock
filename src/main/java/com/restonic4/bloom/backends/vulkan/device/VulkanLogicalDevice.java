@@ -1,12 +1,9 @@
-package com.restonic4.bloom.backends.vulkan;
+package com.restonic4.bloom.backends.vulkan.device;
 
 import com.restonic4.bloom.core.Disposable;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.lwjgl.vulkan.KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 import static org.lwjgl.vulkan.VK10.*;

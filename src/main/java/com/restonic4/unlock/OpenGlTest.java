@@ -1,4 +1,4 @@
-package com.restonic4.bloom.backends.opengl;
+package com.restonic4.unlock;
 
 import com.restonic4.bloom.backends.glfw.GlfwWindow;
 import com.restonic4.bloom.core.math.Time;
@@ -7,7 +7,6 @@ import com.restonic4.bloom.core.rendering.Renderer;
 import com.restonic4.bloom.core.scene.Camera;
 import com.restonic4.bloom.core.scene.Mesh;
 import com.restonic4.bloom.core.scene.MeshInstance;
-import com.restonic4.unlock.Unlock;
 
 import java.util.ArrayList;
 import java.util.List;

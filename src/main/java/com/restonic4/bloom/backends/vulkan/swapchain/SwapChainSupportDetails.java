@@ -1,4 +1,4 @@
-package com.restonic4.bloom.backends.vulkan;
+package com.restonic4.bloom.backends.vulkan.swapchain;
 
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkPhysicalDevice;

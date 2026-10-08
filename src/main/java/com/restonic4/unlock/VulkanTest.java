@@ -1,20 +1,16 @@
-package com.restonic4.bloom.backends.vulkan;
+package com.restonic4.unlock;
 
 import com.restonic4.bloom.backends.glfw.GlfwWindow;
+import com.restonic4.bloom.backends.vulkan.device.VulkanLogicalDevice;
+import com.restonic4.bloom.backends.vulkan.device.VulkanPhysicalDevice;
+import com.restonic4.bloom.backends.vulkan.instance.VulkanInstance;
+import com.restonic4.bloom.backends.vulkan.surface.VulkanSurface;
+import com.restonic4.bloom.backends.vulkan.swapchain.VulkanSwapChain;
+import com.restonic4.bloom.backends.vulkan.swapchain.VulkanSwapChainImageViews;
 import com.restonic4.bloom.core.platform.Version;
 import org.lwjgl.system.Configuration;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkPhysicalDevice;
-import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
-import org.lwjgl.vulkan.VkSurfaceFormatKHR;
-
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.vulkan.KHRSurface.*;
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 
 public class VulkanTest {
     private static final boolean ENABLE_VALIDATION_LAYERS = Configuration.DEBUG.get(true);

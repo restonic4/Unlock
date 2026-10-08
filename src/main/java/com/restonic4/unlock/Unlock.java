@@ -1,7 +1,5 @@
 package com.restonic4.unlock;
 
-import com.restonic4.bloom.backends.opengl.OpenGlTest;
-import com.restonic4.bloom.backends.vulkan.VulkanTest;
 import com.restonic4.bloom.core.graphics.GraphicsApi;
 import com.restonic4.bloom.core.math.Transform;
 import com.restonic4.bloom.core.scene.Mesh;

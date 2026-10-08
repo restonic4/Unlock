@@ -1,4 +1,4 @@
-package com.restonic4.bloom.backends.vulkan;
+package com.restonic4.bloom.backends.vulkan.surface;
 
 import com.restonic4.bloom.core.Disposable;
 import org.lwjgl.system.MemoryStack;

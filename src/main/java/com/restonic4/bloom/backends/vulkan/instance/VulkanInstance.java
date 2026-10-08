@@ -1,4 +1,4 @@
-package com.restonic4.bloom.backends.vulkan;
+package com.restonic4.bloom.backends.vulkan.instance;
 
 import com.restonic4.bloom.core.Disposable;
 import com.restonic4.bloom.core.platform.Version;

@@ -1,5 +1,6 @@
-package com.restonic4.bloom.backends.vulkan;
+package com.restonic4.bloom.backends.vulkan.device;
 
+import com.restonic4.bloom.backends.vulkan.swapchain.SwapChainSupportDetails;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
